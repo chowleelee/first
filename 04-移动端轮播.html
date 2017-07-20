@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .ban{
+            width:470px;
+            height:300px;
+            overflow: hidden;
+            position: relative;
+        }
+        ._ban{
+        }
+        img{
+            width:470px;
+            height:300px;
+        }
+        ._ban li{
+            position: absolute;
+            width:470px;
+            float:left;
+            left:0;
+            top:0;
+        }
+        ._dot{
+            position: absolute;
+            top:190px;
+            right:100px;
+        }
+        ._dot li{
+            width:10px;
+            height:10px;
+            background: #fff;
+            border-radius:50%;
+            float:left;
+        }
+        ._dot li+li{
+            margin-left:5px;
+        }
+    </style>
+</head>
+<body>
+<div class="ban">
+    <ul class="_ban"></ul>
+    <ol class="_dot"></ol>
+</div>
+</body>
+</html>
+<script src="js/tool.js"></script>
+<script src="js/animate.js"></script>
+<script>
+    var ban=document.querySelector(".ban");
+    var _ban=document.querySelector("._ban");
+    var _dot=document.querySelector("._dot");
+    var arrPic=["img/01.jpg","img/02.jpg","img/03.jpg"];
+
+    //动态生成图片
+    for(var i=0;i<arrPic.length;i++){
+        var li=document.createElement("li");
+        var img=document.createElement("img");
+        img.src=arrPic[i];
+        li.appendChild(img);
+        _ban.appendChild(li);
+    }
+
+    var banLi=document.querySelectorAll("._ban li");
+    _ban.style.width=banLi.length*banLi[0].offsetWidth+"px";
+
+    //初始化
+    function init(){
+        for(var i=0;i<banLi.length;i++){
+            banLi[i].style.left=ban.offsetWidth+"px";
+        }
+        banLi[0].style.left="0px";
+        banLi[banLi.length-1].style.left=-ban.offsetWidth+"px";
+    }
+    init();
+
+    //自动轮播
+    var timer=null, num=0;
+    function autoPlay(){
+        clearInterval(timer);
+        timer=setInterval(function(){
+            animate(banLi[num],{
+                left:-ban.offsetWidth
+            });
+            num++;
+            num=num>banLi.length-1? 0:num;
+            banLi[num].style.left=ban.offsetWidth+"px";
+            animate(banLi[num],{
+                left:0
+            })
+        },3000)
+    }
+    autoPlay();
+
+    //滑屏
+    function addEvent(obj,type,fn){
+        obj.addEventListener(type,fn,false);
+    }
+
+    var iTarget=0, startX=0, currentX=0;
+    addEvent(ban,"touchstart",function(ev){
+        clearInterval(timer);
+        var oEv=ev || event;
+        startX=oEv.changedTouches[0].pageX;
+    });
+
+    addEvent(ban,"touchmove",function(ev){
+        var oEv=ev || event;
+        currentX=oEv.changedTouches[0].pageX;
+        iTarget=currentX-startX;
+        banLi[num].style.left=iTarget+"px";
+        if(iTarget<=0){
+            var y=num>=banLi.length-1? 0:num+1;
+            banLi[y].style.left=ban.offsetWidth+iTarget+"px";
+        }else{
+            var y=num<=0? banLi.length-1:num-1;
+            banLi[y].style.left=-ban.offsetWidth+iTarget+"px";
+        }
+    });
+
+    addEvent(ban,"touchend",function(){
+        var x = Math.round(Math.abs(banLi[num].offsetLeft)/ban.offsetWidth);
+        if(x==1){
+            if(banLi[num].offsetLeft>=0){
+                animate(banLi[num],{left:ban.offsetWidth});
+                num=num<=0? banLi.length-1:num-1;
+                var y=num<=0? banLi.length-1:num-1;
+                banLi[y].style.left=-ban.offsetWidth+"px";
+            }else{
+                animate(banLi[num],{left:-ban.offsetWidth});
+                num=num>=banLi.length-1? 0:num+1;
+                var y=num>=banLi.length-1? 0:num+1;
+                banLi[y].style.left=ban.offsetWidth+"px";
+            }
+            animate(banLi[num],{left:0});
+        }else if(x==0){
+            animate(banLi[num],{left:0});
+            if(banLi[num].offsetLeft>=0){
+                var y=num<=0? banLi.length-1:num-1;
+                animate(banLi[y],{left:-ban.offsetWidth});
+            }else{
+                var y=num>=banLi.length-1? 0:num+1;
+                animate(banLi[y],{left:ban.offsetWidth});
+            }
+        }
+        autoPlay();
+    });
+
+
+</script>

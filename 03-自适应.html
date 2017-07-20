@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style:none;
+        }
+        .box{
+            width:100%;
+            position: relative;
+        }
+        ul{
+            width:100%;
+            position: relative;
+            margin-top:20px;
+            left:0;
+            top:0;
+        }
+        ul li{
+            width:25%;
+            height:100px;
+            background: red;
+            float:left;
+            margin-top:20px;
+            left:0;  /*记住 定位一定要写这两句*/
+            top:0;
+        }
+        ul li:nth-child(2n){
+            background: pink;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+</body>
+</html>
+<script src="js/tool.js"></script>
+<script src="js/animate.js"></script>
+<script>
+    var ali=document.querySelectorAll("ul li");
+    var arr=[];
+
+    //获取位置
+    for(var i=0;i<ali.length;i++){
+        arr[i]={
+            left:ali[i].offsetLeft,
+            top:ali[i].offsetTop
+        }
+    }
+    //布局转换
+    function init(){
+        for(var i=0;i<ali.length;i++){
+            ali[i].style.position="absolute";
+            animate(ali[i],{left:arr[i].left,top:arr[i].top});
+        }
+    }
+
+    init();
+
+    window.onresize=function(){
+        var x=document.body.clientWidth;
+        for(var i=0;i<ali.length;i++){
+            ali[i].style.position="static";
+            if(x<=900){
+                ali[i].style.width="50%";
+            }else if(x>900){
+                ali[i].style.width="25%";
+            }
+        }
+        for(var i=0;i<ali.length;i++){
+            arr[i]={
+                left:ali[i].offsetLeft,
+                top:ali[i].offsetTop
+            }
+        }
+        init();
+    }
+
+</script>

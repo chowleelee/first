@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style-type:none;
+        }
+        .box{
+            width:1000px;
+            height:300px;
+            overflow: hidden;
+        }
+        ul{
+            width: 1200px;
+        }
+        ul li{
+            width:200px;
+            height:300px;
+            float:left;
+            overflow: hidden;
+            position: relative;
+            border:1px solid #000;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+</body>
+</html>
+<script src="js/tool.js"></script>
+<script src="js/animate.js"></script>
+<script>
+    var li=document.querySelectorAll("ul li");
+    var arr=["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg"];
+
+
+    for(var i=0;i<li.length;i++){
+        li[i].style.background="url(images/"+arr[i]+")";
+
+
+        /*li[i].onmouseover=function(){
+            var that=this;
+            throttle(function(){
+                for(var i=0;i<li.length;i++){
+                    animate(li[i],{width:50})
+                }
+                animate(that,{width:800});
+            },that);
+        }*/
+
+        li[i].onmouseover=function(){
+            for(var i=0;i<li.length;i++){
+                animate(li[i],{width:50})
+            }
+            animate(this,{width:800});
+
+        }
+    }
+
+    function throttle(fn, context) {
+        clearTimeout(fn.timer);
+        fn.timer = setTimeout(function(){
+            fn.call(context);
+        },100);
+    }
+
+
+</script>
